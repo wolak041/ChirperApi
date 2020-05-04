@@ -3,21 +3,19 @@ const config = require('../config/common');
 
 const express = require('express');
 const app = express();
+const favicon = require('serve-favicon');
+const path = require('path');
 
 app.use((req, res, next) => {
   console.log(`[${(new Date()).toLocaleString()}]: ${req.method.cyan} ${req.originalUrl.yellow}`);
   next();
 });
 
-app.get('/', (req, res) => {
+app.use(favicon(path.join(__dirname,'..','public','favicon.ico')));
+app.use(express.static('public'));
+
+app.get('/get', (req, res) => {
   res.status(200).json({ test: 'Hello World' });
 });
 
-app.listen(config.port, async () => {
-  try {
-    // console.log('\n📚📚📚 Connected 📚📚📚\n');
-
-  } catch (error) {
-    // console.error(`\n🚨🚨🚨 Error 🚨🚨🚨\n${error.toString().brightRed}`);
-  }
-});
+app.listen(config.port);
