@@ -1,20 +1,19 @@
 const UserSchema = require('../models/users');
 
-const getUsersList = (req, res, next) => {
+const getUsersList = (req, res) => {
   UserSchema.find({}, {}, (err, users) => {
     if (err || !users) {
       res.status(401).send({
-        message: 'Unauthorized'
+        message: 'Unauthorized',
       });
-      next(err);
     } else
       res.json({
         status: 'success',
-        users
+        users,
       });
   });
 };
 
 module.exports = {
-  getUsersList
+  getUsersList,
 };

@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const routes = require('./routes');
-const initializeData = require('./seed/user');
+const initializeUser = require('./seed/user');
+const initializePost = require('./seed/feed');
 const path = require('path');
 const favicon = require('serve-favicon');
 
@@ -30,18 +31,18 @@ mongoose
   .connect(config.MONGO, {
     useCreateIndex: true,
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .catch((err) =>
-    console.log('\n🚨🚨🚨 Could not connect to MongoDB 🚨🚨🚨\n', err.toString().brightRed)
+    console.log('\n🚨🚨🚨 Could not connect to MongoDB 🚨🚨🚨\n', err.toString().brightRed),
   );
 
 mongoose.connection.on('connected', () => {
-  initializeData();
-
+  initializeUser();
+  initializePost();
 });
-mongoose.connection.on('error', err =>
-  console.log('\n🚨🚨🚨 Could not connect to MongoDB 🚨🚨🚨\n', err.toString().brightRed)
+mongoose.connection.on('error', (err) =>
+  console.log('\n🚨🚨🚨 Could not connect to MongoDB 🚨🚨🚨\n', err.toString().brightRed),
 );
 
 app.listen(config.PORT);

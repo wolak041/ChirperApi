@@ -1,12 +1,9 @@
 const UserSchema = require('../models/users');
 require('colors');
 
-const isUserExist = async () => {
-  const exec = await UserSchema.find().exec();
-  return exec.length > 0;
-};
+const isUserExist = async () => await UserSchema.find().countDocuments().exec();
 
-const initializeData = async () => {
+const initializeUser = async () => {
   if (!await isUserExist()) {
     const users = [
       new UserSchema({
@@ -26,4 +23,4 @@ const initializeData = async () => {
   }
 };
 
-module.exports = initializeData;
+module.exports = initializeUser;
