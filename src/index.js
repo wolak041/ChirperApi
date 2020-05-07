@@ -10,7 +10,7 @@ const favicon = require('serve-favicon');
 
 const config = require('../config/common');
 const logs = require('./middleware/logs');
-const routes = require('./routes');
+const apiRoutes = require('./apiRoutes');
 const initializeUser = require('./seed/user');
 const initializePost = require('./seed/feed');
 
@@ -52,11 +52,13 @@ if (config.MODE === 'dev') {
   app.use(logs.trafficLog);
 }
 
-app.use('/api', routes);
+app.use('/api', apiRoutes);
 app.use(
   '/',
-  express.static('public'),
+  express.static(path.join(__dirname, '..', 'public')),
   favicon(path.join(__dirname, '..', 'public', 'favicon.ico')),
 );
+
+app.get('/*', (req, res) => res.redirect('/'));
 
 app.listen(config.PORT, config.HOSTNAME, logs.startLog);
