@@ -1,10 +1,12 @@
-const UserSchema = require('../models/users');
 require('colors');
+const UserSchema = require('../models/users');
 
-const isUserExist = async () => await UserSchema.find().countDocuments().exec();
+const countUsers = async () => await UserSchema.find().countDocuments().exec();
 
 const initializeUser = async () => {
-  if (!(await isUserExist())) {
+  const usersNumber = await countUsers();
+
+  if (!usersNumber) {
     const user = new UserSchema({
       name: 'test',
       email: 'test@test.com',

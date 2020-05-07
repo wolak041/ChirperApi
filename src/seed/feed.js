@@ -2,14 +2,15 @@ const FeedSchema = require('../models/feed');
 const UserSchema = require('../models/users');
 require('colors');
 
-const isPostExist = async () => await FeedSchema.find().countDocuments().exec();
+const countPosts = async () => await FeedSchema.find().countDocuments().exec();
 
 const getTestUserId = async () => await UserSchema.findOne({ name: 'test' }).select('_id').exec();
 
 const initializeFeed = async () => {
   const testUserId = (await getTestUserId()).id;
+  const postsNumber = await countPosts();
 
-  if (!(await isPostExist()) && testUserId) {
+  if (!postsNumber && testUserId) {
     const post = new FeedSchema({
       user: testUserId,
       content:
