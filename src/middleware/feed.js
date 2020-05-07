@@ -1,30 +1,28 @@
 const FeedSchema = require('../models/feed');
 
-const getPostsList = (req, res) => {
-  FeedSchema.find({}, {}, (err, posts) => {
-    err
-      ? res.status(401).send({ error: 'Unauthorized' })
-      : res.json({ message: 'Successful getting posts', posts });
-  });
+const getPostsList = async (req, res) => {
+  try {
+    const feed = await FeedSchema.find();
+
+    res.send({ message: 'Successful getting posts', feed });
+  } catch (err) {
+    res.status(401).send({ error: 'Unauthorized' });
+  }
 };
 
-const saveNewPost = (req, res) => {
-  FeedSchema.create(
-    {
-      user: req.session.user.id,
-      content: req.body.content,
-    },
-    (err) => {
-      if (err)
-        res.status(500).send({
-          error: 'Cannot save post',
-        });
-      else
-        res.json({
-          message: 'Post created',
-        });
-    },
-  );
+const saveNewPost = async (req, res) => {
+  const newPost = {
+    user: req.session.user.id,
+    content: req.body.content,
+  };
+
+  try {
+    await FeedSchema.create(newPost);
+
+    res.send({ message: 'Post created' });
+  } catch (err) {
+    res.status(500).send({ error: 'Cannot save post' });
+  }
 };
 
 module.exports = {

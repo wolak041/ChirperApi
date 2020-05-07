@@ -7,8 +7,8 @@ const router = express.Router();
 router.post('/login', authMiddleware.loginUser);
 router.post('/register', authMiddleware.createUser);
 
-router.post('/logout', authMiddleware.checkIfSessionExists, authMiddleware.logoutUser);
-router.post('/feed/get', authMiddleware.checkIfSessionExists, feedMiddleware.getPostsList);
-router.post('/feed/save', authMiddleware.checkIfSessionExists, feedMiddleware.saveNewPost);
+router.post('/logout', authMiddleware.checkSession, authMiddleware.logoutUser);
+router.post('/feed/get', authMiddleware.checkSession, feedMiddleware.getPostsList);
+router.post('/feed/save', authMiddleware.checkSession, feedMiddleware.saveNewPost);
 
 module.exports = router;
