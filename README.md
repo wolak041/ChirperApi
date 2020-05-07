@@ -1,8 +1,24 @@
 ## Requirements
 * [Node](https://nodejs.org/)
+* [Nodemon](https://nodemon.io/)
 
-## Run dev
+## Available scripts
+### Run server in development mode
+```sh
 npm run dev
+```
 
-## Build
+### Run server in production mode
+```sh
 npm run prod
+```
+
+### Run prettier watch
+```sh
+npm run prettier-watch
+```
+
+### Run eslint
+```sh
+npm run lint
+```
