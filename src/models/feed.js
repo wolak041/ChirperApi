@@ -1,17 +1,15 @@
 const mongose = require('mongoose');
 
-const Schema = mongose.Schema;
-
-const FeedSchema = new Schema({
+const FeedSchema = new mongose.Schema({
   user: {
     type: mongose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
   },
   content: {
     type: String,
     trim: true,
-    required: true
-  }
+    required: true,
+  },
 });
 
 module.exports = mongose.model('Feed', FeedSchema);
