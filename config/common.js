@@ -1,11 +1,7 @@
-require('colors');
-const mode = process.env.NODE_ENV;
-const config = require(`./${mode === 'dev' ? 'dev' : 'prod'}`);
-
-console.log(`\n🚀🚀🚀 Application running in ${mode.brightGreen.underline} mode 🚀🚀🚀`);
-console.log(`🎧🎧🎧 Listening on port: ${config.PORT.toString().brightGreen.underline} 🎧🎧🎧\n`);
+const MODE = process.env.NODE_ENV;
+const config = require(`./${MODE === 'dev' ? 'dev' : 'prod'}`);
 
 module.exports = {
   ...config,
-  mode
+  MODE
 };
