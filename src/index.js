@@ -47,15 +47,16 @@ app.use(
     }),
   }),
 );
+
+if (config.MODE === 'dev') {
+  app.use(logs.trafficLog);
+}
+
+app.use('/api', routes);
 app.use(
   '/',
   express.static('public'),
   favicon(path.join(__dirname, '..', 'public', 'favicon.ico')),
 );
-app.use('/api', routes);
-
-if (config.MODE === 'dev') {
-  app.use(logs.trafficLog);
-}
 
 app.listen(config.PORT, config.HOSTNAME, logs.startLog);
