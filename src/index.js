@@ -6,7 +6,6 @@ const MongoStore = require('connect-mongo')(session);
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
-const favicon = require('serve-favicon');
 
 const config = require('../config/common');
 const logs = require('./middleware/logs');
@@ -53,12 +52,8 @@ if (config.MODE === 'dev') {
 }
 
 app.use('/api', apiRoutes);
-app.use(
-  '/',
-  express.static(path.join(__dirname, '..', 'public')),
-  favicon(path.join(__dirname, '..', 'public', 'favicon.ico')),
-);
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.get('/*', (req, res) => res.redirect('/'));
+app.get('/*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
 
 app.listen(config.PORT, config.HOSTNAME, logs.startLog);
