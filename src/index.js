@@ -3,7 +3,6 @@ const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
-const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 
@@ -31,7 +30,6 @@ mongoose.connection.on('connected', () => {
 });
 mongoose.connection.on('error', logs.mongoErrorLog);
 
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
