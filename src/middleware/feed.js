@@ -6,7 +6,7 @@ const getPostsList = async (req, res) => {
 
     res.send({ message: 'Successful getting posts', feed });
   } catch (err) {
-    res.status(401).send({ error: 'Unauthorized' });
+    res.status(500).send({ error: 'Cannot get posts' });
   }
 };
 

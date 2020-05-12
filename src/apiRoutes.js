@@ -8,6 +8,7 @@ router.post('/login', authMiddleware.loginUser);
 router.post('/register', authMiddleware.createUser);
 
 router.post('/logout', authMiddleware.checkSession, authMiddleware.logoutUser);
+router.post('/user/get', authMiddleware.checkSession, authMiddleware.getUser);
 router.post('/feed/get', authMiddleware.checkSession, feedMiddleware.getPostsList);
 router.post('/feed/save', authMiddleware.checkSession, feedMiddleware.saveNewPost);
 

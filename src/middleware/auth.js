@@ -56,9 +56,22 @@ const logoutUser = (req, res) =>
 const checkSession = (req, res, next) =>
   req.session.user ? next() : res.status(401).send({ error: 'No user session' });
 
+const getUser = async (req, res) => {
+  const userId = req.session.user._id;
+
+  try {
+    const user = await UserSchema.findOne(userId).select('-_id');
+
+    res.send({ message: 'User found', user });
+  } catch (err) {
+    res.status(500).send({ error: 'Cannot get user' });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   logoutUser,
   checkSession,
+  getUser,
 };
