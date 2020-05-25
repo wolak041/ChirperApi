@@ -8,12 +8,13 @@ const initializeUser = async () => {
 
   if (!usersNumber) {
     const user = new UserSchema({
-      name: 'test',
+      forename: 'test',
+      surname: 'test',
       email: 'test@test.com',
       password: 'test',
     });
 
-    user.save((err) =>
+    return user.save((err) =>
       err
         ? console.log('\n🚨🚨🚨 Could not create user 🚨🚨🚨\n', err.toString().brightRed)
         : console.log('\n👩🧑👩 User initialized 🧑👩🧑\n'),

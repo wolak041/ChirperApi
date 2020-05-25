@@ -8,7 +8,8 @@ const createUser = async (req, res) => {
 
   if (isEmailAvailable) {
     const newUser = {
-      name: req.body.name,
+      forename: req.body.forename,
+      surname: req.body.surname,
       email: req.body.email,
       password: req.body.password,
     };
