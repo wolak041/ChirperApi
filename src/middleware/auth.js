@@ -22,16 +22,16 @@ const createUser = async (req, res) => {
       res.status(400).send({ error: 'Cannot create user' });
     }
   } else {
-    res.status(409).send({ error: 'Cannot complete' });
+    res.status(409).send({ error: 'Account with this email already exists' });
   }
 };
 
 const loginUser = async (req, res) => {
-  const userLogin = { email: req.body.email };
+  const { email, password } = req.body;
 
   try {
-    const user = await UserSchema.findOne(userLogin).select('password _id');
-    const match = await bcrypt.compare(req.body.password, user.password);
+    const user = await UserSchema.findOne({ email }).select('password _id');
+    const match = user && (await bcrypt.compare(password, user.password));
 
     if (match) {
       req.session.user = { id: user._id };
