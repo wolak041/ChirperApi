@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.post('/login', authMiddleware.loginUser);
 router.post('/register', authMiddleware.createUser);
+router.post('/availability/nickname', authMiddleware.isNicknameAvailable);
+router.post('/availability/email', authMiddleware.isEmailAvailable);
 
 router.post('/logout', authMiddleware.checkSession, authMiddleware.logoutUser);
 router.post('/user/get', authMiddleware.checkSession, authMiddleware.getUser);

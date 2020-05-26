@@ -1,29 +1,40 @@
 const bcrypt = require('bcrypt');
 const UserSchema = require('../models/users');
 
-const checkEmailAvailability = async (email) => !(await UserSchema.findOne({ email }));
+const handleAvailabilityCheck = async (value, res) => {
+  try {
+    const isAvailable = !(await UserSchema.findOne(value));
+    res.send({ isAvailable });
+  } catch (err) {
+    res.status(400).send({
+      error: 'Request invalid',
+    });
+  }
+};
+
+const isNicknameAvailable = async (req, res) => {
+  const { nickname } = req.body;
+  handleAvailabilityCheck({ nickname }, res);
+};
+const isEmailAvailable = async (req, res) => {
+  const { email } = req.body;
+  handleAvailabilityCheck({ email }, res);
+};
 
 const createUser = async (req, res) => {
-  const isEmailAvailable = await checkEmailAvailability(req.body.email);
+  const newUser = {
+    nickname: req.body.nickname,
+    email: req.body.email,
+    password: req.body.password,
+  };
 
-  if (isEmailAvailable) {
-    const newUser = {
-      forename: req.body.forename,
-      surname: req.body.surname,
-      email: req.body.email,
-      password: req.body.password,
-    };
+  try {
+    const user = await UserSchema.create(newUser);
 
-    try {
-      const user = await UserSchema.create(newUser);
-
-      req.session.user = { id: user._id };
-      res.send({ message: 'User created' });
-    } catch (err) {
-      res.status(400).send({ error: 'Cannot create user' });
-    }
-  } else {
-    res.status(409).send({ error: 'Account with this email already exists' });
+    req.session.user = { id: user._id };
+    res.send({ message: 'User created' });
+  } catch (err) {
+    res.status(400).send({ error: 'Cannot create user' });
   }
 };
 
@@ -70,6 +81,8 @@ const getUser = async (req, res) => {
 };
 
 module.exports = {
+  isNicknameAvailable,
+  isEmailAvailable,
   createUser,
   loginUser,
   logoutUser,

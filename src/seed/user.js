@@ -8,8 +8,7 @@ const initializeUser = async () => {
 
   if (!usersNumber) {
     const user = new UserSchema({
-      forename: 'test',
-      surname: 'test',
+      nickname: 'test',
       email: 'test@test.com',
       password: 'test',
     });
