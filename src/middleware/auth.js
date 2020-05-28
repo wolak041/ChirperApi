@@ -28,12 +28,21 @@ const createUser = async (req, res) => {
     password: req.body.password,
   };
 
+  console.log(newUser);
   try {
     const user = await UserSchema.create(newUser);
 
     req.session.user = { id: user._id };
-    res.send({ message: 'User created' });
+    res.send({
+      message: 'User created',
+      user: {
+        nickname: user.nickname,
+        email: user.email,
+      },
+    });
   } catch (err) {
+    console.log(err);
+
     res.status(400).send({ error: 'Cannot create user' });
   }
 };
@@ -42,19 +51,23 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserSchema.findOne({ email }).select('password _id');
+    const user = await UserSchema.findOne({ email }).select('nickname email password');
     const match = user && (await bcrypt.compare(password, user.password));
 
     if (match) {
       req.session.user = { id: user._id };
-      res.send({ message: 'Login successful' });
+      res.send({
+        message: 'Login successful',
+        user: {
+          nickname: user.nickname,
+          email: user.email,
+        },
+      });
     } else {
       res.status(401).send({ error: 'Invalid email or password' });
     }
   } catch (err) {
-    res.status(400).send({
-      error: 'Request invalid',
-    });
+    res.status(400).send({ error: 'Request invalid' });
   }
 };
 
@@ -72,7 +85,7 @@ const getUser = async (req, res) => {
   const userId = req.session.user._id;
 
   try {
-    const user = await UserSchema.findOne(userId).select('-_id');
+    const user = await UserSchema.findOne(userId).select('-_id -password');
 
     res.send({ message: 'User found', user });
   } catch (err) {
