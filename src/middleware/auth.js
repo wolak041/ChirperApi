@@ -36,6 +36,7 @@ const createUser = async (req, res) => {
     res.send({
       message: 'User created',
       user: {
+        id: user._id,
         nickname: user.nickname,
         email: user.email,
       },
@@ -51,7 +52,7 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserSchema.findOne({ email }).select('nickname email password');
+    const user = await UserSchema.findOne({ email }).select('nickname email password _id');
     const match = user && (await bcrypt.compare(password, user.password));
 
     if (match) {
@@ -59,6 +60,7 @@ const loginUser = async (req, res) => {
       res.send({
         message: 'Login successful',
         user: {
+          id: user._id,
           nickname: user.nickname,
           email: user.email,
         },
@@ -85,9 +87,16 @@ const getUser = async (req, res) => {
   const userId = req.session.user._id;
 
   try {
-    const user = await UserSchema.findOne(userId).select('-_id -password');
+    const user = await UserSchema.findOne(userId).select('nickname email password _id');
 
-    res.send({ message: 'User found', user });
+    res.send({
+      message: 'User found',
+      user: {
+        id: user._id,
+        nickname: user.nickname,
+        email: user.email,
+      },
+    });
   } catch (err) {
     res.status(500).send({ error: 'Cannot get user' });
   }

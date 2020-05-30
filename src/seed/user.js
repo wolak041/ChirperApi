@@ -10,7 +10,7 @@ const initializeUser = async () => {
     const user = new UserSchema({
       nickname: 'test',
       email: 'test@test.com',
-      password: 'test',
+      password: '123456',
     });
 
     return user.save((err) =>
