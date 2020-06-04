@@ -28,7 +28,6 @@ const createUser = async (req, res) => {
     password: req.body.password,
   };
 
-  console.log(newUser);
   try {
     const user = await UserSchema.create(newUser);
 
@@ -42,8 +41,6 @@ const createUser = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
-
     res.status(400).send({ error: 'Cannot create user' });
   }
 };
@@ -84,10 +81,10 @@ const checkSession = (req, res, next) =>
   req.session.user ? next() : res.status(401).send({ error: 'No user session' });
 
 const getUser = async (req, res) => {
-  const userId = req.session.user._id;
+  const userId = req.session.user.id;
 
   try {
-    const user = await UserSchema.findOne(userId).select('nickname email password _id');
+    const user = await UserSchema.findById(userId);
 
     res.send({
       message: 'User found',
