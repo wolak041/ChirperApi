@@ -10,6 +10,10 @@ const FeedSchema = new mongose.Schema({
     trim: true,
     required: true,
   },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = mongose.model('Feed', FeedSchema);

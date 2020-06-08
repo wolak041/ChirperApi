@@ -11,7 +11,8 @@ router.post('/availability/email', authMiddleware.isEmailAvailable);
 
 router.post('/logout', authMiddleware.checkSession, authMiddleware.logoutUser);
 router.post('/user/get', authMiddleware.checkSession, authMiddleware.getUser);
-router.post('/feed/get', authMiddleware.checkSession, feedMiddleware.getPostsList);
+router.post('/feed/main', authMiddleware.checkSession, feedMiddleware.getMainFeed);
+router.post('/feed/user', authMiddleware.checkSession, feedMiddleware.getUserFeed);
 router.post('/feed/save', authMiddleware.checkSession, feedMiddleware.saveNewPost);
 
 module.exports = router;
