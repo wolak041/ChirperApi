@@ -80,7 +80,7 @@ const logoutUser = (req, res) =>
 const checkSession = (req, res, next) =>
   req.session.user ? next() : res.status(401).send({ error: 'No user session' });
 
-const getUser = async (req, res) => {
+const getLoggedUser = async (req, res) => {
   const userId = req.session.user.id;
 
   try {
@@ -106,5 +106,5 @@ module.exports = {
   loginUser,
   logoutUser,
   checkSession,
-  getUser,
+  getLoggedUser,
 };

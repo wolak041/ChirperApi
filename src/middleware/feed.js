@@ -21,8 +21,20 @@ const getMainFeed = async (req, res) => {
 };
 
 const getUserFeed = async (req, res) => {
+  const limit = parseInt(req.body.limit, 10);
+  const lastPostDate = new Date(req.body.lastPostDate);
+  const lastPostsIds = req.body.lastPostsIds;
+  const userId = req.body.userId;
+
   try {
-    const feed = await FeedSchema.find();
+    const feed = await FeedSchema.find({
+      user: userId,
+      date: { $lte: lastPostDate },
+      _id: { $nin: lastPostsIds },
+    })
+      .sort({ date: 'desc' })
+      .limit(parseInt(limit, 10))
+      .populate('user');
 
     res.send({ message: 'Successful getting posts', feed });
   } catch (err) {
