@@ -33,13 +33,14 @@ const getUserFeed = async (req, res) => {
 const saveNewPost = async (req, res) => {
   const newPost = {
     user: req.session.user.id,
-    content: req.body.content,
+    content: req.body.newPost,
   };
 
   try {
-    await FeedSchema.create(newPost);
+    const post = await FeedSchema.create(newPost);
+    const postAndUser = await post.populate('user').execPopulate();
 
-    res.send({ message: 'Post created' });
+    res.send({ message: 'Post created', newPost: postAndUser });
   } catch (err) {
     res.status(500).send({ error: 'Cannot save post' });
   }
