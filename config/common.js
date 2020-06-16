@@ -3,5 +3,5 @@ const config = require(`./${MODE === 'dev' ? 'dev' : 'prod'}`);
 
 module.exports = {
   ...config,
-  MODE
+  MODE,
 };

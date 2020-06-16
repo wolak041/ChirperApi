@@ -1,7 +1,5 @@
 const mongose = require('mongoose');
-const bcrypt = require('bcrypt');
-
-const saltRounds = 10;
+const hashPassword = require('../services/hashPassword');
 
 const UserSchema = new mongose.Schema(
   {
@@ -19,7 +17,7 @@ const UserSchema = new mongose.Schema(
       required: true,
       unique: true,
       validate: {
-        validator: (email) => /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(email),
+        validator: email => /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(email),
         message: 'Invalid email',
       },
     },
@@ -36,7 +34,7 @@ const UserSchema = new mongose.Schema(
 );
 
 UserSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hash(this.password, saltRounds);
+  this.password = await hashPassword(this.password);
   next();
 });
 

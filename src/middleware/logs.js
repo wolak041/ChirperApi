@@ -12,10 +12,10 @@ const trafficLog = (req, res, next) => {
   next();
 };
 
-const mongoConnectionErrorLog = (err) =>
+const mongoConnectionErrorLog = err =>
   console.log('\n🚨🚨🚨 Could not connect to MongoDB 🚨🚨🚨\n', err.toString().brightRed);
 
-const mongoErrorLog = (err) =>
+const mongoErrorLog = err =>
   console.log('\n🚨🚨🚨 MongoDB error 🚨🚨🚨\n', err.toString().brightRed);
 
 module.exports = {
