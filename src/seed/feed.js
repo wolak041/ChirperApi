@@ -16,9 +16,10 @@ const initializeFeed = async () => {
       user: testUser.id,
       content:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      likes: [],
     });
 
-    post.save((err) =>
+    post.save(err =>
       err
         ? console.log('\n🚨🚨🚨 Could not create post 🚨🚨🚨\n', err.toString().brightRed)
         : console.log('\n📝📝📝 Post initialized 📝📝📝\n'),

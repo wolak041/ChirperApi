@@ -18,5 +18,7 @@ router.post('/account/changePassword', userMiddleware.checkSession, userMiddlewa
 router.post('/feed/main', userMiddleware.checkSession, feedMiddleware.getMainFeed);
 router.post('/feed/user', userMiddleware.checkSession, feedMiddleware.getUserFeed);
 router.post('/feed/save', userMiddleware.checkSession, feedMiddleware.saveNewPost);
+router.post('/feed/like', userMiddleware.checkSession, feedMiddleware.likePost);
+router.post('/feed/dislike', userMiddleware.checkSession, feedMiddleware.dislikePost);
 
 module.exports = router;

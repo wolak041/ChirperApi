@@ -14,6 +14,9 @@ const FeedSchema = new mongose.Schema({
     type: Date,
     default: Date.now,
   },
+  likes: {
+    type: [{ type: mongose.Schema.Types.ObjectId, ref: 'User' }],
+  },
 });
 
 module.exports = mongose.model('Feed', FeedSchema);

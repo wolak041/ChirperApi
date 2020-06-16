@@ -82,10 +82,10 @@ const checkSession = (req, res, next) =>
   req.session.user ? next() : res.status(401).send({ error: 'No user session' });
 
 const getLoggedUser = async (req, res) => {
-  const userId = req.session.user.id;
+  const loggedUserId = req.session.user.id;
 
   try {
-    const user = await UserSchema.findById(userId);
+    const user = await UserSchema.findById(loggedUserId);
 
     res.send({
       message: 'User found',
@@ -102,11 +102,11 @@ const getLoggedUser = async (req, res) => {
 
 //TODO: Ask for current password
 const changeEmail = async (req, res) => {
-  const userId = req.session.user.id;
+  const loggedUserId = req.session.user.id;
 
   try {
     const user = await UserSchema.findByIdAndUpdate(
-      userId,
+      loggedUserId,
       { email: req.body.newEmail },
       {
         new: true,
@@ -125,12 +125,12 @@ const changeEmail = async (req, res) => {
 
 //TODO: Ask for current password
 const changePassword = async (req, res) => {
-  const userId = req.session.user.id;
+  const loggedUserId = req.session.user.id;
 
   try {
     const newPassword = await hashPassword(req.body.newPassword);
     const user = await UserSchema.findByIdAndUpdate(
-      userId,
+      loggedUserId,
       { password: newPassword },
       {
         new: true,
