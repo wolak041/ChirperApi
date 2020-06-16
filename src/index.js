@@ -19,6 +19,7 @@ mongoose
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   })
   .catch(logs.mongoConnectionErrorLog);
 

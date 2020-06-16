@@ -4,5 +4,6 @@ module.exports = {
   SESSION_SECRET: 'test',
   MONGO_STORE_SECRET: 'test',
   SESSION_UPDATE_AFTER: 24 * 60 * 60,
-  HOSTNAME: 'localhost'
+  HOSTNAME: 'localhost',
+  SALT_ROUNDS: 10,
 };

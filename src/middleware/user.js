@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const UserSchema = require('../models/users');
+const hashPassword = require('../services/hashPassword');
 
 const handleAvailabilityCheck = async (value, res) => {
   try {
@@ -71,7 +72,7 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = (req, res) =>
-  req.session.destroy((err) => {
+  req.session.destroy(err => {
     err
       ? res.status(500).send({ error: 'Unable to logout' })
       : res.send({ message: 'Logout successful' });
@@ -99,6 +100,53 @@ const getLoggedUser = async (req, res) => {
   }
 };
 
+//TODO: Ask for current password
+const changeEmail = async (req, res) => {
+  const userId = req.session.user.id;
+
+  try {
+    const user = await UserSchema.findByIdAndUpdate(
+      userId,
+      { email: req.body.newEmail },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    res.send({
+      message: 'Email changed',
+      user,
+    });
+  } catch (err) {
+    res.status(500).send({ error: 'Cannot change email' });
+  }
+};
+
+//TODO: Ask for current password
+const changePassword = async (req, res) => {
+  const userId = req.session.user.id;
+
+  try {
+    const newPassword = await hashPassword(req.body.newPassword);
+    const user = await UserSchema.findByIdAndUpdate(
+      userId,
+      { password: newPassword },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    res.send({
+      message: 'Password changed',
+      user,
+    });
+  } catch (err) {
+    res.status(500).send({ error: 'Cannot change password' });
+  }
+};
+
 module.exports = {
   isNicknameAvailable,
   isEmailAvailable,
@@ -107,4 +155,6 @@ module.exports = {
   logoutUser,
   checkSession,
   getLoggedUser,
+  changeEmail,
+  changePassword,
 };
