@@ -1,7 +1,9 @@
 const FeedSchema = require('../models/feed');
 const mongoose = require('mongoose');
 
-const createAggregate = async (match, limit, loggedUserId) =>
+const stringToObjectId = string => mongoose.Types.ObjectId(string);
+
+const createAggregate = async (match, limit = 1, loggedUserId) =>
   await FeedSchema.aggregate()
     .match(match)
     .sort({ date: 'desc' })
@@ -32,12 +34,12 @@ const createAggregate = async (match, limit, loggedUserId) =>
     });
 
 const getMainFeed = async (req, res) => {
-  try {
-    const limit = parseInt(req.body.limit, 10);
-    const lastPostDate = new Date(req.body.lastPostDate);
-    const lastPostsIds = req.body.lastPostsIds.map(id => mongoose.Types.ObjectId(id));
-    const loggedUserId = mongoose.Types.ObjectId(req.session.user.id);
+  const limit = parseInt(req.body.limit, 10);
+  const lastPostDate = new Date(req.body.lastPostDate);
+  const lastPostsIds = req.body.lastPostsIds.map(id => stringToObjectId(id));
+  const loggedUserId = stringToObjectId(req.session.user.id);
 
+  try {
     const feed = await createAggregate(
       {
         date: { $lte: lastPostDate },
@@ -54,13 +56,13 @@ const getMainFeed = async (req, res) => {
 };
 
 const getUserFeed = async (req, res) => {
-  try {
-    const limit = parseInt(req.body.limit, 10);
-    const lastPostDate = new Date(req.body.lastPostDate);
-    const lastPostsIds = req.body.lastPostsIds.map(id => mongoose.Types.ObjectId(id));
-    const userId = mongoose.Types.ObjectId(req.body.userId);
-    const loggedUserId = mongoose.Types.ObjectId(req.session.user.id);
+  const limit = parseInt(req.body.limit, 10);
+  const lastPostDate = new Date(req.body.lastPostDate);
+  const lastPostsIds = req.body.lastPostsIds.map(id => stringToObjectId(id));
+  const userId = stringToObjectId(req.body.userId);
+  const loggedUserId = stringToObjectId(req.session.user.id);
 
+  try {
     const feed = await createAggregate(
       {
         user: userId,
@@ -73,23 +75,22 @@ const getUserFeed = async (req, res) => {
 
     res.send({ message: 'Successful getting posts', feed });
   } catch (err) {
-    console.log(err);
-
     res.status(500).send({ error: 'Cannot get posts' });
   }
 };
 
 const saveNewPost = async (req, res) => {
+  const loggedUser = req.session.user.id;
   const newPost = {
-    user: req.session.user.id,
+    user: loggedUser,
     content: req.body.newPost,
   };
 
   try {
     const post = await FeedSchema.create(newPost);
-    const postAndUser = await post.populate('user').execPopulate();
+    const createdPost = (await createAggregate({ _id: stringToObjectId(post._id) }))[0];
 
-    res.send({ message: 'Post created', newPost: postAndUser });
+    res.send({ message: 'Post created', newPost: createdPost });
   } catch (err) {
     res.status(500).send({ error: 'Cannot save post' });
   }
