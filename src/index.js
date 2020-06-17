@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
 const path = require('path');
+const expressStaticGzip = require('express-static-gzip');
 
 const config = require('../config/common');
 const logs = require('./middleware/logs');
@@ -51,8 +52,10 @@ if (config.MODE === 'dev') {
 }
 
 app.use('/api', apiRoutes);
-app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.get('/*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
+if (config.MODE === 'dev') {
+  app.use(expressStaticGzip(path.join(__dirname, '..', 'public')));
+  app.get('/*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
+}
 
 app.listen(config.PORT, config.HOSTNAME, logs.startLog);

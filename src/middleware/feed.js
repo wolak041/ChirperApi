@@ -34,12 +34,12 @@ const createAggregate = async (match, limit = 1, loggedUserId) =>
     });
 
 const getMainFeed = async (req, res) => {
-  const limit = parseInt(req.body.limit, 10);
-  const lastPostDate = new Date(req.body.lastPostDate);
-  const lastPostsIds = req.body.lastPostsIds.map(id => stringToObjectId(id));
-  const loggedUserId = stringToObjectId(req.session.user.id);
-
   try {
+    const limit = parseInt(req.body.limit, 10);
+    const lastPostDate = new Date(req.body.lastPostDate);
+    const lastPostsIds = req.body.lastPostsIds.map(id => stringToObjectId(id));
+    const loggedUserId = stringToObjectId(req.session.user.id);
+
     const feed = await createAggregate(
       {
         date: { $lte: lastPostDate },
@@ -56,13 +56,13 @@ const getMainFeed = async (req, res) => {
 };
 
 const getUserFeed = async (req, res) => {
-  const limit = parseInt(req.body.limit, 10);
-  const lastPostDate = new Date(req.body.lastPostDate);
-  const lastPostsIds = req.body.lastPostsIds.map(id => stringToObjectId(id));
-  const userId = stringToObjectId(req.body.userId);
-  const loggedUserId = stringToObjectId(req.session.user.id);
-
   try {
+    const limit = parseInt(req.body.limit, 10);
+    const lastPostDate = new Date(req.body.lastPostDate);
+    const lastPostsIds = req.body.lastPostsIds.map(id => stringToObjectId(id));
+    const userId = stringToObjectId(req.body.userId);
+    const loggedUserId = stringToObjectId(req.session.user.id);
+
     const feed = await createAggregate(
       {
         user: userId,
@@ -80,9 +80,8 @@ const getUserFeed = async (req, res) => {
 };
 
 const saveNewPost = async (req, res) => {
-  const loggedUser = req.session.user.id;
   const newPost = {
-    user: loggedUser,
+    user: req.session.user.id,
     content: req.body.newPost,
   };
 
