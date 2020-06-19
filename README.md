@@ -1,6 +1,7 @@
 ## Requirements
 * [Node](https://nodejs.org/)
 * [Nodemon](https://nodemon.io/)
+* [MongoDB](https://www.mongodb.com/)
 
 ## Available scripts
 ### Run server in development mode
