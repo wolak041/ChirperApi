@@ -3,6 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const expressStaticGzip = require('express-static-gzip');
@@ -32,6 +33,12 @@ mongoose.connection.on('connected', () => {
 });
 mongoose.connection.on('error', logs.mongoErrorLog);
 
+app.use(
+  cors({
+    credentials: true,
+    origin: config.ALLOW_ORIGIN,
+  }),
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(

@@ -6,4 +6,5 @@ module.exports = {
   SESSION_UPDATE_AFTER: 24 * 60 * 60,
   HOSTNAME: 'localhost',
   SALT_ROUNDS: 10,
+  ALLOW_ORIGIN: 'http://localhost:8080'
 };

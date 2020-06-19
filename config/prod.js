@@ -6,4 +6,5 @@ module.exports = {
   SESSION_UPDATE_AFTER: process.env.SESSION_UPDATE_AFTER,
   HOSTNAME: process.env.HOSTNAME,
   SALT_ROUNDS: process.env.SALT_ROUNDS,
+  ALLOW_ORIGIN: process.env.ALLOW_ORIGIN
 };
