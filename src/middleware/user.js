@@ -36,9 +36,8 @@ const createUser = async (req, res) => {
     res.send({
       message: 'User created',
       user: {
-        id: user._id,
+        _id: user._id,
         nickname: user.nickname,
-        email: user.email,
       },
     });
   } catch (err) {
@@ -50,7 +49,7 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserSchema.findOne({ email }).select('nickname email password _id');
+    const user = await UserSchema.findOne({ email }).select('nickname password _id');
     const match = user && (await bcrypt.compare(password, user.password));
 
     if (match) {
@@ -58,9 +57,8 @@ const loginUser = async (req, res) => {
       res.send({
         message: 'Login successful',
         user: {
-          id: user._id,
+          _id: user._id,
           nickname: user.nickname,
-          email: user.email,
         },
       });
     } else {
@@ -85,18 +83,14 @@ const getLoggedUser = async (req, res) => {
   const loggedUserId = req.session.user.id;
 
   try {
-    const user = await UserSchema.findById(loggedUserId);
+    const user = await UserSchema.findById(loggedUserId).select('_id nickname');
 
     res.send({
       message: 'User found',
-      user: {
-        id: user._id,
-        nickname: user.nickname,
-        email: user.email,
-      },
+      user,
     });
   } catch (err) {
-    res.status(500).send({ error: 'Cannot get user' });
+    res.status(400).send({ error: 'Cannot get user' });
   }
 };
 
@@ -112,14 +106,14 @@ const changeEmail = async (req, res) => {
         new: true,
         runValidators: true,
       },
-    );
+    ).select('_id nickname');
 
     res.send({
       message: 'Email changed',
       user,
     });
   } catch (err) {
-    res.status(500).send({ error: 'Cannot change email' });
+    res.status(400).send({ error: 'Cannot change email' });
   }
 };
 
@@ -136,14 +130,14 @@ const changePassword = async (req, res) => {
         new: true,
         runValidators: true,
       },
-    );
+    ).select('_id nickname');
 
     res.send({
       message: 'Password changed',
       user,
     });
   } catch (err) {
-    res.status(500).send({ error: 'Cannot change password' });
+    res.status(400).send({ error: 'Cannot change password' });
   }
 };
 
