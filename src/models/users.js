@@ -1,4 +1,5 @@
 const mongose = require('mongoose');
+const validator = require('validator');
 const hashPassword = require('../services/hashPassword');
 
 const UserSchema = new mongose.Schema(
@@ -16,10 +17,7 @@ const UserSchema = new mongose.Schema(
       trim: true,
       required: true,
       unique: true,
-      validate: {
-        validator: email => /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(email),
-        message: 'Invalid email',
-      },
+      validate: validator.isEmail,
     },
     password: {
       type: String,
