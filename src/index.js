@@ -37,6 +37,7 @@ app.use(
   cors({
     credentials: true,
     origin: config.ALLOW_ORIGIN,
+    methods: ['POST'],
   }),
 );
 app.use(bodyParser.json());
