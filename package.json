@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js",
-    "prod": "cross-env NODE_ENV=prod nodemon ./src/index.js",
-    "dev": "cross-env DEBUG=express:* NODE_ENV=dev nodemon ./src/index.js",
+    "prod": "cross-env NODE_ENV=production nodemon ./src/index.js",
+    "dev": "cross-env DEBUG=express:* NODE_ENV=development nodemon ./src/index.js",
     "prettier-watch": "onchange \"src/**/*\" -- prettier --write {{changed}}",
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,16 +25,18 @@
     "node": "=12.13.1"
   },
   "dependencies": {
-    "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "colors": "^1.4.0",
-    "connect-mongo": "^3.2.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
-    "express-session": "^1.17.1",
     "express-static-gzip": "^2.0.6",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.11",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^6.0.1",
     "validator": "^13.1.1"
   },
   "devDependencies": {

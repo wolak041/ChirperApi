@@ -2,6 +2,8 @@ module.exports = {
   MONGO: process.env.MONGO,
   PORT: process.env.PORT,
   SESSION_SECRET: process.env.SESSION_SECRET,
+  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_EXPIRATION_TIME: process.env.JWT_EXPIRATION_TIME,
   MONGO_STORE_SECRET: process.env.MONGO_STORE_SECRET,
   SESSION_UPDATE_AFTER: process.env.SESSION_UPDATE_AFTER,
   HOSTNAME: process.env.HOSTNAME,
