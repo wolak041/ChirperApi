@@ -1,24 +1,25 @@
 const express = require('express');
-const userMiddleware = require('./middleware/user');
-const feedMiddleware = require('./middleware/feed');
+const userController = require('./controllers/user');
+const feedController = require('./controllers/feed');
+const auth = require('./middlewares/auth');
 
 const router = express.Router();
 
-router.post('/login', userMiddleware.loginUser);
-router.post('/register', userMiddleware.createUser);
-router.post('/availability/nickname', userMiddleware.isNicknameAvailable);
-router.post('/availability/email', userMiddleware.isEmailAvailable);
+router.post('/login', auth.localCheck, userController.loginUser);
+router.post('/register', userController.createUser);
+router.post('/availability/nickname', userController.isNicknameAvailable);
+router.post('/availability/email', userController.isEmailAvailable);
 
-router.post('/logout', userMiddleware.checkSession, userMiddleware.logoutUser);
-router.post('/user/getLogged', userMiddleware.checkSession, userMiddleware.getLoggedUser);
+router.post('/logout', auth.jwtCheck, userController.logoutUser);
+router.post('/user/getLogged', auth.jwtCheck, userController.getLoggedUser);
 
-router.post('/account/changeEmail', userMiddleware.checkSession, userMiddleware.changeEmail);
-router.post('/account/changePassword', userMiddleware.checkSession, userMiddleware.changePassword);
+router.post('/account/changeEmail', auth.jwtCheck, userController.changeEmail);
+router.post('/account/changePassword', auth.jwtCheck, userController.changePassword);
 
-router.post('/feed/main', userMiddleware.checkSession, feedMiddleware.getMainFeed);
-router.post('/feed/user', userMiddleware.checkSession, feedMiddleware.getUserFeed);
-router.post('/feed/save', userMiddleware.checkSession, feedMiddleware.saveNewPost);
-router.post('/feed/like', userMiddleware.checkSession, feedMiddleware.likePost);
-router.post('/feed/dislike', userMiddleware.checkSession, feedMiddleware.dislikePost);
+router.post('/feed/main', auth.jwtCheck, feedController.getMainFeed);
+router.post('/feed/user', auth.jwtCheck, feedController.getUserFeed);
+router.post('/feed/save', auth.jwtCheck, feedController.saveNewPost);
+router.post('/feed/like', auth.jwtCheck, feedController.likePost);
+router.post('/feed/dislike', auth.jwtCheck, feedController.dislikePost);
 
 module.exports = router;
