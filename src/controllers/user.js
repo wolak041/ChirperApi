@@ -1,6 +1,5 @@
 const UserSchema = require('../models/users');
 const { REFRESH_JWT_EXPIRATION_TIME, MODE } = require('../../config');
-const { ACCESS_JWT_EXPIRATION_TIME } = require('../../config/dev');
 
 const handleAvailabilityCheck = async (value, res) => {
   try {
@@ -51,7 +50,6 @@ const loginUser = (req, res) => {
       nickname: user.nickname,
     },
     accessToken,
-    accessTokenExpirationTime: ACCESS_JWT_EXPIRATION_TIME,
   });
 };
 

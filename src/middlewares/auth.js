@@ -68,7 +68,6 @@ const refreshTokens = (req, res) => {
   res.send({
     message: 'Token refreshed',
     accessToken,
-    accessTokenExpirationTime: ACCESS_JWT_EXPIRATION_TIME,
   });
 };
 
