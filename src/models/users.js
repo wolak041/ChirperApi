@@ -1,6 +1,6 @@
 const mongose = require('mongoose');
 const validator = require('validator');
-const hashPassword = require('../services/hashPassword');
+const passportLocalMongoose = require('passport-local-mongoose');
 
 const UserSchema = new mongose.Schema(
   {
@@ -17,6 +17,7 @@ const UserSchema = new mongose.Schema(
       trim: true,
       required: true,
       unique: true,
+      lowercase: true,
       validate: validator.isEmail,
     },
     password: {
@@ -28,12 +29,13 @@ const UserSchema = new mongose.Schema(
   },
   {
     versionKey: false,
+    timestamps: true,
   },
 );
 
-UserSchema.pre('save', async function (next) {
-  this.password = await hashPassword(this.password);
-  next();
+UserSchema.plugin(passportLocalMongoose, {
+  usernameField: 'email',
+  hashField: 'password',
 });
 
 module.exports = mongose.model('User', UserSchema);

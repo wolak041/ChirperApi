@@ -1,4 +1,5 @@
 const FeedSchema = require('../models/feed');
+const UserSchema = require('../models/users');
 const mongoose = require('mongoose');
 
 const stringToObjectId = string => mongoose.Types.ObjectId(string);
@@ -38,7 +39,7 @@ const getMainFeed = async (req, res) => {
     const limit = parseInt(req.body.limit, 10);
     const lastPostDate = new Date(req.body.lastPostDate);
     const lastPostsIds = req.body.lastPostsIds.map(id => stringToObjectId(id));
-    const loggedUserId = stringToObjectId(req.session.user.id);
+    const loggedUserId = stringToObjectId(req.user._id);
 
     const feed = await createAggregate(
       {
@@ -61,8 +62,9 @@ const getUserFeed = async (req, res) => {
     const lastPostDate = new Date(req.body.lastPostDate);
     const lastPostsIds = req.body.lastPostsIds.map(id => stringToObjectId(id));
     const userId = stringToObjectId(req.body.userId);
-    const loggedUserId = stringToObjectId(req.session.user.id);
+    const loggedUserId = stringToObjectId(req.user._id);
 
+    const user = await UserSchema.findById(userId).select('_id nickname');
     const feed = await createAggregate(
       {
         user: userId,
@@ -73,7 +75,7 @@ const getUserFeed = async (req, res) => {
       loggedUserId,
     );
 
-    res.send({ message: 'Successful getting posts', feed });
+    res.send({ message: 'Successful getting posts', feed, user });
   } catch (err) {
     res.status(500).send({ error: 'Cannot get posts' });
   }
@@ -81,7 +83,7 @@ const getUserFeed = async (req, res) => {
 
 const saveNewPost = async (req, res) => {
   const newPost = {
-    user: req.session.user.id,
+    user: req.user._id,
     content: req.body.newPost,
   };
 
@@ -96,7 +98,7 @@ const saveNewPost = async (req, res) => {
 };
 
 const likePost = async (req, res) => {
-  const loggedUserId = req.session.user.id;
+  const loggedUserId = req.user._id;
   const postId = req.body.postId;
 
   try {
@@ -113,7 +115,7 @@ const likePost = async (req, res) => {
 };
 
 const dislikePost = async (req, res) => {
-  const loggedUserId = req.session.user.id;
+  const loggedUserId = req.user._id;
   const postId = req.body.postId;
 
   try {

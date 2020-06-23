@@ -1,23 +1,25 @@
 require('colors');
 const express = require('express');
-const session = require('express-session');
 const mongoose = require('mongoose');
-const MongoStore = require('connect-mongo')(session);
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const path = require('path');
-const expressStaticGzip = require('express-static-gzip');
+const cookieParser = require('cookie-parser');
 
-const config = require('../config/common');
-const logs = require('./middleware/logs');
+const { MONGO, MODE, ALLOW_ORIGIN, PORT, HOSTNAME } = require('../config');
+const { passportConfig } = require('./passport');
+const logs = require('./middlewares/logs');
 const apiRoutes = require('./apiRoutes');
 const initializeUser = require('./seed/user');
 const initializePost = require('./seed/feed');
+const { catchErrors } = require('./middlewares/errors');
+const isDev = MODE === 'development';
 
 const app = express();
 
+passportConfig();
+
 mongoose
-  .connect(config.MONGO, {
+  .connect(MONGO, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -26,7 +28,7 @@ mongoose
   .catch(logs.mongoConnectionErrorLog);
 
 mongoose.connection.on('connected', () => {
-  if (config.MODE === 'dev') {
+  if (isDev) {
     initializeUser();
     initializePost();
   }
@@ -36,34 +38,20 @@ mongoose.connection.on('error', logs.mongoErrorLog);
 app.use(
   cors({
     credentials: true,
-    origin: config.ALLOW_ORIGIN,
-    methods: ['POST'],
+    origin: ALLOW_ORIGIN,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    exposedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   }),
 );
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    secret: config.SESSION_SECRET,
-    store: new MongoStore({
-      mongooseConnection: mongoose.connection,
-      touchAfter: config.SESSION_UPDATE_AFTER,
-      secret: config.MONGO_STORE_SECRET,
-    }),
-  }),
-);
 
-if (config.MODE === 'dev') {
+if (isDev) {
   app.use(logs.trafficLog);
 }
 
 app.use('/api', apiRoutes);
+app.use(catchErrors);
 
-if (config.MODE === 'dev') {
-  app.use(expressStaticGzip(path.join(__dirname, '..', 'public')));
-  app.get('/*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
-}
-
-app.listen(config.PORT, config.HOSTNAME, logs.startLog);
+app.listen(PORT, HOSTNAME, logs.startLog);

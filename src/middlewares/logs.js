@@ -1,10 +1,10 @@
 require('colors');
-const config = require('../../config/common');
+const { MODE, HOSTNAME, PORT } = require('../../config');
 
 const startLog = () => {
-  console.log(`\n🚀🚀🚀 Application running in ${config.MODE.brightGreen.underline} mode 🚀🚀🚀`);
-  console.log(`📄📄📄 Server hostname: ${config.HOSTNAME.brightGreen.underline} 📄📄📄`);
-  console.log(`🎧🎧🎧 Listening on port: ${config.PORT.toString().brightGreen.underline} 🎧🎧🎧\n`);
+  console.log(`\n🚀🚀🚀 Application running in ${MODE.brightGreen.underline} mode 🚀🚀🚀`);
+  console.log(`📄📄📄 Server hostname: ${HOSTNAME.brightGreen.underline} 📄📄📄`);
+  console.log(`🎧🎧🎧 Listening on port: ${PORT.toString().brightGreen.underline} 🎧🎧🎧\n`);
 };
 
 const trafficLog = (req, res, next) => {
