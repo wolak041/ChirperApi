@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
 const UserSchema = require('../models/users');
-const { JWT_SECRET, JWT_EXPIRATION_TIME } = require('../../config');
+const { REFRESH_JWT_EXPIRATION_TIME, MODE } = require('../../config');
+const { ACCESS_JWT_EXPIRATION_TIME } = require('../../config/dev');
 
 const handleAvailabilityCheck = async (value, res) => {
   try {
@@ -22,53 +22,38 @@ const isEmailAvailable = async (req, res) => {
   handleAvailabilityCheck({ email }, res);
 };
 
-const createToken = userId =>
-  jwt.sign({ _id: userId }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRATION_TIME,
-  });
-
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const { nickname, email, password } = req.body;
 
   try {
     const user = new UserSchema({ nickname, email });
     await UserSchema.register(user, password);
-
-    const token = createToken(user._id);
-
-    res.send({
-      message: 'User created',
-      user: {
-        _id: user._id,
-        nickname: user.nickname,
-      },
-      token,
-    });
+    req.user = user;
+    next();
   } catch (err) {
     res.status(400).send({ error: 'Cannot create user' });
   }
 };
 
 const loginUser = (req, res) => {
-  const { user } = req;
-  const token = createToken(user._id);
+  const { user, accessToken, refreshToken } = req;
 
+  res.cookie('refreshToken', refreshToken, {
+    maxAge: REFRESH_JWT_EXPIRATION_TIME * 1000,
+    httpOnly: true,
+    secure: MODE === 'production',
+    sameSite: 'None',
+  });
   res.send({
-    message: 'Login successful',
+    message: 'Authorization successful',
     user: {
       _id: user._id,
       nickname: user.nickname,
     },
-    token,
+    accessToken,
+    accessTokenExpirationTime: ACCESS_JWT_EXPIRATION_TIME,
   });
 };
-
-const logoutUser = (req, res) =>
-  req.session.destroy(err => {
-    err
-      ? res.status(500).send({ error: 'Unable to logout' })
-      : res.send({ message: 'Logout successful' });
-  });
 
 const getLoggedUser = (req, res) => {
   const { _id, nickname } = req.user;
@@ -132,7 +117,6 @@ module.exports = {
   isEmailAvailable,
   createUser,
   loginUser,
-  logoutUser,
   getLoggedUser,
   changeEmail,
   changePassword,

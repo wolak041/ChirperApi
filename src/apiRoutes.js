@@ -5,21 +5,21 @@ const auth = require('./middlewares/auth');
 
 const router = express.Router();
 
-router.post('/login', auth.localCheck, userController.loginUser);
-router.post('/register', userController.createUser);
+router.post('/login', auth.localCheck, auth.createNewTokens, userController.loginUser);
+router.post('/register', userController.createUser, auth.createNewTokens, userController.loginUser);
+router.post('/refresh_tokens', auth.refreshTokenCheck, auth.refreshTokens);
 router.post('/availability/nickname', userController.isNicknameAvailable);
 router.post('/availability/email', userController.isEmailAvailable);
 
-router.post('/logout', auth.jwtCheck, userController.logoutUser);
-router.post('/user/getLogged', auth.jwtCheck, userController.getLoggedUser);
+router.post('/user/get_logged', auth.accessTokenCheck, userController.getLoggedUser);
 
-router.post('/account/changeEmail', auth.jwtCheck, userController.changeEmail);
-router.post('/account/changePassword', auth.jwtCheck, userController.changePassword);
+router.post('/account/change_email', auth.accessTokenCheck, userController.changeEmail);
+router.post('/account/change_password', auth.accessTokenCheck, userController.changePassword);
 
-router.post('/feed/main', auth.jwtCheck, feedController.getMainFeed);
-router.post('/feed/user', auth.jwtCheck, feedController.getUserFeed);
-router.post('/feed/save', auth.jwtCheck, feedController.saveNewPost);
-router.post('/feed/like', auth.jwtCheck, feedController.likePost);
-router.post('/feed/dislike', auth.jwtCheck, feedController.dislikePost);
+router.post('/feed/main', auth.accessTokenCheck, feedController.getMainFeed);
+router.post('/feed/user', auth.accessTokenCheck, feedController.getUserFeed);
+router.post('/feed/save', auth.accessTokenCheck, feedController.saveNewPost);
+router.post('/feed/like', auth.accessTokenCheck, feedController.likePost);
+router.post('/feed/dislike', auth.accessTokenCheck, feedController.dislikePost);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const FeedSchema = require('../models/feed');
+const UserSchema = require('../models/users');
 const mongoose = require('mongoose');
 
 const stringToObjectId = string => mongoose.Types.ObjectId(string);
@@ -63,6 +64,7 @@ const getUserFeed = async (req, res) => {
     const userId = stringToObjectId(req.body.userId);
     const loggedUserId = stringToObjectId(req.user._id);
 
+    const user = await UserSchema.findById(userId).select('_id nickname');
     const feed = await createAggregate(
       {
         user: userId,
@@ -73,7 +75,7 @@ const getUserFeed = async (req, res) => {
       loggedUserId,
     );
 
-    res.send({ message: 'Successful getting posts', feed });
+    res.send({ message: 'Successful getting posts', feed, user });
   } catch (err) {
     res.status(500).send({ error: 'Cannot get posts' });
   }

@@ -3,8 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const path = require('path');
-const expressStaticGzip = require('express-static-gzip');
+const cookieParser = require('cookie-parser');
 
 const { MONGO, MODE, ALLOW_ORIGIN, PORT, HOSTNAME } = require('../config');
 const { passportConfig } = require('./passport');
@@ -40,11 +39,12 @@ app.use(
   cors({
     credentials: true,
     origin: ALLOW_ORIGIN,
-    methods: ['POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     exposedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   }),
 );
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 if (isDev) {
@@ -52,12 +52,6 @@ if (isDev) {
 }
 
 app.use('/api', apiRoutes);
-
-if (isDev) {
-  app.use(expressStaticGzip(path.join(__dirname, '..', 'public')));
-  app.get('/*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
-}
-
 app.use(catchErrors);
 
 app.listen(PORT, HOSTNAME, logs.startLog);

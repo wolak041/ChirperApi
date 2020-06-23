@@ -16,14 +16,33 @@ const verifyUser = async (payload, done) => {
   }
 };
 
-const passportConfig = () => {
-  const config = {
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: JWT_SECRET,
-  };
+const cookieExtractor = req => {
+  const { refreshToken } = req.cookies;
+  return refreshToken;
+};
 
+const passportConfig = () => {
   passport.use(UserSchema.createStrategy());
-  passport.use(new JWTStrategy(config, verifyUser));
+  passport.use(
+    'accessToken',
+    new JWTStrategy(
+      {
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+        secretOrKey: JWT_SECRET,
+      },
+      verifyUser,
+    ),
+  );
+  passport.use(
+    'refreshToken',
+    new JWTStrategy(
+      {
+        jwtFromRequest: cookieExtractor,
+        secretOrKey: JWT_SECRET,
+      },
+      verifyUser,
+    ),
+  );
 };
 
 module.exports = {
