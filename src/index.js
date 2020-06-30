@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const { MONGO, MODE, ALLOW_ORIGIN, PORT, HOSTNAME } = require('../config');
 const { passportConfig } = require('./passport');
 const logs = require('./middlewares/logs');
-const apiRoutes = require('./apiRoutes');
+const routes = require('./routes');
 const initializeUser = require('./seed/user');
 const initializePost = require('./seed/feed');
 const { catchErrors } = require('./middlewares/errors');
@@ -51,7 +51,7 @@ if (isDev) {
   app.use(logs.trafficLog);
 }
 
-app.use('/api', apiRoutes);
+app.use(routes);
 app.use(catchErrors);
 
 app.listen(PORT, HOSTNAME, logs.startLog);

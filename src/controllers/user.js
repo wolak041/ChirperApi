@@ -13,11 +13,11 @@ const handleAvailabilityCheck = async (value, res) => {
 };
 
 const isNicknameAvailable = async (req, res) => {
-  const { nickname } = req.body;
+  const { nickname } = req.params;
   handleAvailabilityCheck({ nickname }, res);
 };
 const isEmailAvailable = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.params;
   handleAvailabilityCheck({ email }, res);
 };
 
